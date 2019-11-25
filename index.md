@@ -1,59 +1,48 @@
 ﻿---
 layout: page
-title: Parallel Programming with Python
+title: High-Performance Computational Physics Part 1 : Intro to HPC & MPI
 ---
 
 Modern Computers systems are often "parallel", i.e. they have multiple processing units that can be taught to work together on a single application. Parallel computers range from multicore cell phones to huge clusters with hundreds of thousands of processors. Programming for such machines can be a daunting task. But a few basic principles can get you surprisingly far.
 
-In this course we would like to give you a basic introduction into how to go about writing a parallel program, and then run it on a small parallel system. We're using a system called "MPI" (Message Passing Interface) for this. There's a few reasons why we're using MPI to illustrate parallel programming:
+In the first part of the course we give a basic introduction into how to use a multi-user cluster and how to go about writing parallel programs to run on such systems. The operating system for High-Performance systems is usually "Linux". We're going to pick up some of that here as well. 
+
+For the programming, we'll use a system called "MPI" (Message Passing Interface). There's a few reasons why we're using MPI to illustrate parallel programming:
 
 1.  MPI works on any kind of parallel computer, irrespective of the details of the architecture;
 2.  It is very explicit, i.e. everything to do with parallel processing has to be "spelled out";
-3.  Python bindings are available, so we can build on what we learned before; and
-4.  Although it is large and can get very complex, there's a lot of simlifications we can make, and we get some good parallelism out of a handful of function calls.
+3.  Python bindings are available, so we can use that programming language as a framework. We will see that this offers some greast simplifications, so it's great to learn the basics, but there are issues with performance.
+4.  Although MPI is large and can get very complex, there's a lot of simlifications we can make, and we get some good parallelism out of a handful of function calls.
 
-Note that we won't be able to make a parallel programmer out of you in a few hours. We're just using this opportunity to give you an idea of what's what. We encourage you to join the one or other of the "High-Performance Computing" courses that we offer, where we can go into more detail.
+Note that we won't be able to make a parallel programmer out of you in a few hours. We're just using this opportunity to give you an idea of what's what. We encourage you to learn some of the trickier details of MPI programming from books and by writing your own code.
 
-The approach we are taking here is to work towards taking our "Mandelbrot Set" program that we developed in the Programming in Python session, and "parallelize" it by letting multiple processors do parts of the overall work simultaneously.
+The approach we are taking here is to "parallelize" simple sample code, and then alter the reulting parallel program until it does what we want it to do. The goal is to let let multiple processors do parts of the overall work simultaneously.
 
-Ont the way, we will earn a few techniques that are common when programming for clusters and other parallel systems, and test them out with sample programs.
+On the way, we will earn a few techniques that are common when programming for clusters and other parallel systems, and test them out with sample programs.
 
 > ## Note {.prereq}
 >
-> Unfortunately, this part of the workshops is a less hands-on than others. This is unavoidable: because we are going to introduce 
-> a lot of new concepts before we are ready to apply them, there's going to be a lot more talking and slides. We're trying 
-> to put the one or other exercise in there.
+> Unfortunately, this can not all be done "hands-on". It is unavoidable to introduce 
+> new concepts before we are ready to apply them, there's going to be quite a bit of talking and slides. We will put exercises in there whenever possible, and at the end of the 2nd, 4th, and 5th session, there will be assignments.
 >
-> The stuff we did in the "Programming with Python course" is pretty much a prerequisit for this. We've got a version of the program we ended up with for you, so you won't have to "start from scratch". For the first few lessons we will use pre-made programs to demonstrate things.
+> Some programming background in Python is a prerequisit for this, but since this is not the "native" programming language of the lecturer, you're likely to teach him more Python than he teaches you. Occasionally, we will use use pre-made programs to demonstrate things.
 
 > ## Getting ready {.getready}
 >
-> All the required data and programs can be found in your home directory on your account
->
-> There is a folder (directory) parallel in your home directory.
-> You can access this folder from the Unix shell with:
->
-> ~~~ {.input}
-> $ cd python-parallel
-> ~~~
->
-> Once you're there you're ready.
+> All the required data and and code segements will made available as the course progresses. You will also be issued an account on the CAC "Frontenac" compute cluster for the duration of the course.
 
 ## Topics
 
-1.  [Parallel Computing](01-parallel.md)
-2.  [Shared Memory and Distributed Memory](02-smdm.md)
-3.  [Multicore Machines and Multithreading](03-multicore.md)
-4.  [Clusters and Message Passing](04-clusters.md)
-5.  [MPI](05-mpi.md)
-6.  [Back to Python: MPI4Py](06-mpi4py.md)
-7.  [All Together Now: Hello World](07-hello.md)
-8.  [Let's Talk: Point-To-Point](08-p2p.md)
-9.  [Broadcast and Reduce: Sum of Square Roots](09-rootsum.md)
-10. [The Return of Mandelbrot (in parallel)](10-mandel.md)
-11. [Running Parallel Programs on HPC Systems](11-hpc.md)
-12. [More MPI: The Master Slave Model](12-msm.md)
-13. [Memory Distribution: Multiplying matrices](13-matmul.md)
+1.  [Parallel Computing](111.md)
+2.  [Shared Memory and Distributed Memory](112.md)
+3.  [Multicore Machines and Multithreading](121.md)
+4.  [Clusters and Message Passing](122.md)
+5.  [MPI](211.md)
+6.  [Back to Python: MPI4Py](212.md)
+7.  [All Together Now: Hello World](221.md)
+8.  [Let's Talk: Point-To-Point](222.md)
+9.  [Broadcast and Reduce: Sum of Square Roots](311.md)
+10. [The Return of Mandelbrot (in parallel)](312.md)
 
 ## Other Resources
 
