@@ -42,7 +42,7 @@ On the way, we will earn a few techniques that are common when programming for c
 7.  [Week 2, Session 2, Hour 1 : The Master-Slave Model](221.md)
 8.  [Week 2, Session 1, Hour 2 : Memory Distribution amd Matrix Multiply](222.md)
 9.  [Week 3, Session 1, Hour 1 : Domain Decomposition and Heat Equation](311.md)
-10. [Week 2, Session 1, Hour 1 : TBD](312.md)
+10. [Week 3, Session 1, Hour 2 : TBD](312.md)
 
 ## Other Resources
 
