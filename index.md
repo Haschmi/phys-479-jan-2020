@@ -33,16 +33,16 @@ On the way, we will earn a few techniques that are common when programming for c
 
 ## Topics
 
-1.  [Parallel Computing](111.md)
-2.  [Shared Memory and Distributed Memory](112.md)
-3.  [Multicore Machines and Multithreading](121.md)
-4.  [Clusters and Message Passing](122.md)
-5.  [MPI](211.md)
-6.  [Back to Python: MPI4Py](212.md)
-7.  [All Together Now: Hello World](221.md)
-8.  [Let's Talk: Point-To-Point](222.md)
-9.  [Broadcast and Reduce: Sum of Square Roots](311.md)
-10. [The Return of Mandelbrot (in parallel)](312.md)
+1.  [Week 1, Session 1, Hour 1 : Getting on and around HPC systems](111.md)
+2.  [Week 1, Session 1, Hour 1 : File manipulation and software](112.md)
+3.  [Week 1, Session 2, Hour 1 : SLURM scheduler and Makefiles](121.md)
+4.  [Week 1, Session 2, Hour 2 : Parallel Computing, MPI](122.md)
+5.  [Week 2, Session 1, Hour 1 : Basic MPI, Point-2-Point Communication](211.md)
+6.  [Week 2, Session 1, Hour 2 : Parallelizing Mandelbrot](212.md)
+7.  [Week 2, Session 2, Hour 1 : The Master-Slave Model](221.md)
+8.  [Week 2, Session 1, Hour 2 : Memory Distribution amd Matrix Multiply](222.md)
+9.  [Week 3, Session 1, Hour 1 : Domain Decomposition and Heat Equation](311.md)
+10. [Week 2, Session 1, Hour 1 : TBD](312.md)
 
 ## Other Resources
 
