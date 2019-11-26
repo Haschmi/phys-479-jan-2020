@@ -11,7 +11,7 @@ subtitle: Reference
 * Getting around using bash
 * Monitoring the system
 
-##  [Week 1, Session 1, Hour 1 : File manipulation and software](112.md)
+##  [Week 1, Session 1, Hour 2 : File manipulation and software](112.md)
 * File manipulation with bash
 * Editing
 * Software, the CVMFS stack, and lmod
@@ -53,7 +53,7 @@ subtitle: Reference
 * Applying MS model to Mandelbrot set
 * Collecting results
 
-##  [Week 2, Session 1, Hour 2 : Memory Distribution amd Matrix Multiply](222.md)
+##  [Week 2, Session 2, Hour 2 : Memory Distribution amd Matrix Multiply](222.md)
 * Matrix multiplication in serial and parallel
 * Simple approach : Broadcast/reduce
 * Implementation of simple matmul
@@ -68,7 +68,7 @@ subtitle: Reference
 * Simple example : 1D Heat Equation
 * Bare Bones Implementation
 
-##  [Week 2, Session 1, Hour 1 : TBD](312.md)
+##  [Week 2, Session 1, Hour 2 : TBD](312.md)
 * Extensions to 2D and 3D in general
 * Cyclic block distribution
 * Stuff we have not touched
