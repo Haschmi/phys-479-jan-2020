@@ -1,0 +1,708 @@
+---
+layout: page
+title: Parallel Computing on HPC systems
+subtitle: Week 1, Session 1, Hour 2 : File manipulation and software
+minutes: 60
+---
+> ##  Outline {.objectives}
+> * File manipulation with bash
+> * Editing
+> * Software, the CVMFS stack, and lmod
+> * Setting upo software and running it
+> * Compiling and building programs
+> * Using python and installing packages
+
+Now that we know how to move around and look at things, let's learn how to read, write, and handle files!
+
+```{.bash}
+cd ~
+```
+
+What if we want to make a file? There are a few ways of doing this,
+the easiest of which is simply using a text editor. For this lesson,
+we are going to us `nano`, since it's super easy to use.
+
+To use `nano` on a file, simply type `nano <filename>`. If the file
+does not exist, it will be created. `^O` (ctrl + O) saves the file,
+and `^X` quits. If you have not saved your file upon trying to quit,
+it will ask you if you want to save.
+
+> ## Using `vi` as a text editor {.callout}
+> Although `vi` isn't the easiest or most user-friendly of text editors, you'll be able to find it on any system and it will take you far.
+>
+> A few things about using `vi` before we start. There are couple modes, a command mode (for doing big operations) and an "insert" mode. You can switch to insert mode with the `i` key, and command mode with `Esc`.
+>
+> In insert mode, you can type more or less normally. In command mode there are a few commands you should be aware of:
+> `:q!` - quit, without saving
+> `:wq` - save and quit
+> `dd` - cut/delete a line
+> `y` - paste a line
+
+Let's make a new file now, type whatever you want in it, and save it.
+```{.bash}
+nano test.txt
+```
+![Nano in action](fig/nano-screenshot.png)
+
+Do a quick check to confirm our file was created.
+```{.bash}
+ls
+```
+```{.output}
+test.txt
+```
+
+Let's read our file now. There are a few different ways of doing this,
+the simplest of which is simply reading the entire file with `cat`.
+
+```{.bash}
+cat test.txt
+```
+```{.output}
+This is the contents of our test file.
+```
+
+Although `cat` may not seem like an intuitive command with which to
+open files, it stands for "concatenate"- giving it multiple arguments
+will print out one file followed by the contents of the next, and so
+on.
+
+```{.bash}
+cat test.txt test.txt
+```
+```{.output}
+This is the contents of our test file.
+This is the contents of our test file.
+```
+
+We've successfully created a file. What about a directory? We've
+actually done this before, using `mkdir`.
+
+```{.bash}
+mkdir files
+ls
+```
+
+## Moving and copying files
+
+To practice moving files, we will move `test.txt` to that directory
+with `mv` (move). `mv`'s syntax is relatively simple, and works for
+both files and directories `mv <file/directory> <path to new
+location>`
+
+```{.bash}
+mv test.txt files
+cd files
+ls
+```
+```{.output}
+test.txt
+```
+
+`test.txt` isn't a very descriptive name. How do we go about changing it?
+
+It turns out that the way to rename files and folders is with `mv`
+again. Although this may not seem intuitive at first, think of it as
+moving a file to be stored under a different name. The syntax is quite
+similar to moving files: `mv <oldName> <newName>`.
+
+```{.bash}
+mv test.txt newname.testfile
+ls
+```
+```{.output}
+newname.testfile
+```
+
+> ## File extensions are arbitrary {.callout}
+>
+> In the last example, we changed both a file's name and extension at the same time. On UNIX systems, file extensions (like .txt) are arbitrary. A file is a .txt file only because we say it is. Changing the name or extension of the file will *never* change a file's contents, so you are free to rename things as you wish.
+
+What if we want to copy a file, instead of simply renaming or moving
+it? Use `cp`. This command has to different uses that work in the same
+way as `mv`:
+
++ Copy to same directory (new name): `cp <file> <newFilename>`
+
++ Copy to other directory (same name): `cp <file> <directory>`
+
+Let's try this out.
+
+```{.bash}
+cp newname.testfile copy.testfile
+ls
+cp newname.testfile ..
+cd ..
+ls
+```
+```{.output}
+newname.testfile copy.testfile
+files Documents newname.testfile
+```
+
+## Removing files
+
+We've begun to clutter up our workspace with all of the directories
+and stuff we've been making. Let's learn how to get rid of them. One
+important note before we start... when you delete a file on UNIX
+systems, they are gone **forever**. There is no "recycle bin" or
+"trash". Once a file is deleted, it is gone, never to return. So be
+*very* careful when deleting files.
+
+Files are deleted with `rm <file> [moreFiles]`. To delete the `newname.testfile` in our current directory:
+```{.bash}
+ls
+rm newname.testfile
+ls
+```
+```{.output}
+files Documents newname.testfile
+files Documents
+```
+
+That was simple enough. Directories are deleted in a similar manner using `rmdir`.
+
+```{.bash}
+ls
+rmdir Documents
+rmdir files
+ls
+```
+```{.output}
+files Documents
+rmdir: failed to remove `files/': Directory not empty
+files
+```
+
+What happened? As it turns out, `rmdir` is unable to remove
+directories that have stuff in them. To delete a directory and
+everything inside it, we will use a special variant of `rm`, `rm -rf
+<directory>`. This is probably the scariest command on UNIX- it will
+force delete a directory and all of its contents without
+prompting. **ALWAYS** double check your typing before using it... if
+you leave out the arguments, it will attempt to delete everything on
+your file system that you have permission to delete. So when deleting
+directories be very, very careful.
+
+> ## What happens when you use `rm -rf` accidentally {.callout}
+>
+> Steam is a major online sales platform for PC videogames with over 125 million users. In 2015, it generated over 3.5 billion dollars in sales. Despite this, it hasn't always had the most stable or error-free code.
+>
+> In January 2015, user kevyin on GitHub reported that Steam's Linux client had deleted every file on his computer. It turned out that one of the Steam programmers had added the following line: `rm -rf "$STEAMROOT/"*`. Due to the way that Steam was set up, the variable `$STEAMROOT` was never initialized, meaning the statement evaluated to `rm -rf /*`. This coding error in the Linux client meant that Steam recursively deleted every single file when run in certain scenarios (including connected external hard drives). Moral of the story: **be very careful** when using rm -rf!
+
+## Practice problem - looking at files
+
+Sometimes it's not practical to read an entire file with `cat`- the
+file might be way too large, take a long time to open, or maybe we
+want to only look at a certain part of the file. As an example, we are
+going to look at a large and complex file type used in bioinformatics-
+a .gtf file. The GTF2 format is commonly used to describe the location
+of genetic features in a genome.
+
+Let's grab and unpack an example file for us to use with `wget` (`wget
+<link>` downloads a file from a link):
+
+```{.bash}
+wget https://cac.queensu.ca/wp-content/files/phys479-112.tar.gz
+gunzip Drosophila_melanogaster.BDGP5.77.gtf.gz
+```
+
+> ## Unzipping files {.callout}
+>
+> We just unzipped a .gz file for this example. What if we run into other file formats that we need to unzip? Just use the handy reference below:
+>
+> * `gunzip` unzips .gz files
+> * `unzip` unzips .zip files
+> * `unrar` unzips .rar files
+> * `tar -xzf` unzips .tar.gz files
+> * `tar -xjf` unzips .tar.bz2 files
+
+We just downloaded every annotated feature in the *Drosophila
+melanogaster* genome. It's a huge file- what happens if we run `cat`
+on it? (Press `Ctrl + C` to stop it).
+
+So, `cat` isn't any good when reading big files. What are the
+alternatives? Try all of these out and see which ones you like best!
+
++ `head <file>` - Print the top 10 lines in a file to the console. You can control the number of lines you see with `-n [numberOfLines]`.
+
++ `tail <file>` - Same as `head`, but prints the last five lines in a file to the console.
+
++ `more <file>` - Opens a file and display as much as possible on-screen. You can scroll with `Enter` or the arrow keys on your keyboard. Press `q` to close the viewer. Everything that you've looked at remains on screen.
+
++ `less <file>` - Identical to `more`, except what you've looked at get's hidden once you close `less` with `q`. Remember, `less` is `more`.
+
+## Accessing software
+
+On a high-performance computing system, it is often the case that no
+software is loaded by default. If we want to use a software package,
+we will need to “load” it ourselves.
+
+Before we start using individual software packages, however, we should
+understand the reasoning behind this approach. The three biggest
+factors are:
+
+* software incompatibilities;
+* versioning;
+* dependencies.
+
+Software incompatibility is a major headache for
+programmers. Sometimes the presence (or absence) of a software package
+will break others that depend on it. Two of the most famous examples
+are Python 2 and 3 and C compiler versions. Python 3 famously provides
+a python command that conflicts with that provided by Python
+2. Software compiled against a newer version of the C libraries and
+then used when they are not present will result in a nasty
+'GLIBCXX_3.4.20' not found error, for instance.
+
+Software versioning is another common issue. A team might depend on a
+certain package version for their research project - if the software
+version was to change (for instance, if a package was updated), it
+might affect their results. Having access to multiple software
+versions allow a set of researchers to prevent software versioning
+issues from affecting their results.
+
+Dependencies are where a particular software package (or even a
+particular version) depends on having access to another software
+package (or even a particular version of another software
+package). For example, the VASP materials science software may depend
+on having a particular version of the FFTW (Fastest Fourer Transform
+in the West) software library available for it to work.
+
+## Environment modules
+
+Environment modules are the solution to these problems. A module is a
+self-contained description of a software package - it contains the
+settings required to run a software packace and, usually, encodes
+required dependencies on other software packages.
+
+There are a number of different environment module implementations
+commonly used on HPC systems: the two most common are TCL modules and
+Lmod. Both of these use similar syntax and the concepts are the same
+so learning to use one will allow you to use whichever is installed on
+the system you are using. In both implementations the module command
+is used to interact with environment modules. An additional subcommand
+is usually added to the command to specify what you want to do. For a
+list of subcommands you can use module -h or module help. As for all
+commands, you can access the full help on the man pages with man
+module.
+
+On login you may start out with a default set of modules loaded or you
+may start out with an empty environment, this depends on the setup of
+the system you are using.
+
+## Listing currently loaded modules
+
+You can use the module list command to see which modules you currently
+have loaded in your environment. If you have no modules loaded, you
+will see a message telling you so
+
+~~~~ {.python}
+$ module list
+~~~~
+~~~~ {.output}
+
+Currently Loaded Modules:
+  1) nixpkgs/16.09   (S)      5) ifort/.2016.4.258 (H)   9) java/1.8.0_121 (t)
+  2) imkl/11.3.4.258 (math)   6) intel/2016.4      (t)  10) r/3.5.0        (t)
+  3) gcccore/.5.4.0  (H)      7) openmpi/2.1.1     (m)
+  4) icc/.2016.4.258 (H)      8) StdEnv/2016.4     (S)
+
+  Where:
+   S:     Module is Sticky, requires --force to unload or purge
+   m:     MPI implementations / Implémentations MPI
+   math:  Mathematical libraries / Bibliothèques mathématiques
+   t:     Tools for development / Outils de développement
+   H:                Hidden Module
+
+~~~~
+
+On the system we are working on, a whole array of software is pre-loaded. This includes compilers, libraries, some programming environments such as R, and the parallel communication system "MPI" that will be central to this part of the course.
+
+If we don't want these modules, for instance because we need a "clean slate", we can get rid of the lot of them with the purge command:
+
+~~~~ {.python}
+$ module --force purge
+hasch@caclogin02$ module list
+~~~~
+~~~~ {.output}
+No modules loaded
+~~~~
+
+The modules that are loaded by default are largely part of a Compute Canada software stack that is called the "CVMFS" stack. It contains software that can be run on almost any CentOS based compute cluster, i.e. it is very portable. It contains hundreds of software packages that are largely "public domain" and can be used from our system freely.
+
+Let's generate a list of what is available
+
+~~~~ {.python}
+$ module avail 
+~~~~
+~~~~
+----------------------------- MPI-dependent avx2 modules -------------------------------
+abinit/8.2.2     (chem)      lammps/20170331                    plumed/2.3.0        (chem)
+abyss/1.9.0      (bio)       mrbayes/3.2.6            (bio)     pnetcdf/1.8.1       (io)
+boost-mpi/1.60.0 (t)         ncl/6.4.0                          quantumespresso/6.0 (chem)
+cdo/1.7.2        (geo)       ncview/2.1.7             (vis)     ray/2.3.1           (bio)
+
+[removed most of the output here for clarity]
+
+   t:        Tools for development / Outils de développement
+   vis:      Visualisation software / Logiciels de visualisation
+   chem:     Chemistry libraries/apps / Logiciels de chimie
+   geo:      Geography libraries/apps / Logiciels de géographie
+   phys:     Physics libraries/apps / Logiciels de physique
+   Aliases:  Aliases exist: foo/1.2.3 (1.2) means that "module load foo/1.2" will load foo/1.2.3
+   D:        Default Module
+
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of the "keys".
+~~~~
+
+The list is very long. To focus on a specific software you can narrow it down by quoting the name of the package you are looking for. This query is case insensitive, so if you keep it simple you have a good chance to find what you're looking for:
+
+~~~~ {.python}
+$ module avail python
+~~~~
+~~~~ {.output}
+
+-------------------------- MPI-dependent avx2 modules --------------------------
+   python27-mpi4py/2.0.0 (t)    python35-mpi4py/2.0.0 (t)
+
+----------------------- Compiler-dependent avx2 modules ------------------------
+   python27-scipy-stack/2017a (math)    python35-scipy-stack/2017a (math)
+
+--------------------------------- Core Modules ---------------------------------
+   ipython-kernel/2.7    ipython-kernel/3.8 (D)          python/3.7.0 (t)
+   ipython-kernel/3.5    python/2.7.14      (t,2:2.7)    python/3.7.4 (t)
+   ipython-kernel/3.6    python/3.5.4       (t,D:3.5)    python/3.8.0 (t)
+   ipython-kernel/3.7    python/3.6.3       (t,3:3.6)
+
+  Where:
+   math:     Mathematical libraries / Bibliothèques mathématiques
+   t:        Tools for development / Outils de développement
+   Aliases:  Aliases exist: foo/1.2.3 (1.2) means that "module load foo/1.2" will load foo/1.2.3
+   D:        Default Module
+
+Use "module spider" to find all possible modules.
+Use "module keyword key1 key2 ..." to search for all possible modules matching
+any of the "keys".
+
+~~~~
+
+This list more than a dozen python versions that are available on the system. The one with a "D" in parenthesis (3.5.4) is the default, so we can get that version by
+
+~~~~ {.python}
+$ module load python
+$ which python
+$ pthon --version
+~~~~
+~~~~ {.python}
+/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.5.4/bin/python
+Python 3.5.4
+~~~~
+
+If we want another version we have to quote the full name of the module, including the version:
+
+~~~~ {.python}
+$ module load python/3.8.0
+hasch@caclogin03$ python --version
+~~~~
+~~~~ {.output}
+The following have been reloaded with a version change:
+  1) python/3.5.4 => python/3.8.0
+
+Python 3.8.0
+~~~~
+
+## What are modules doing ?
+
+One of the most important things it is doing is setting the "PATH"
+environment variable.  $PATH is a special environment variable that
+controls where a UNIX system looks for software. Specifically $PATH is
+a list of directories (separated by :) that the OS searches through
+for a command before giving up and telling us it can’t find it. As
+with all environment variables we can print it out using echo.
+
+~~~~ {.python}
+$ echo $PATH
+~~~~
+~~~~ {.output}
+/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.8.0/bin:/cvmfs/soft.computecanada.ca/easybuild/software/2017/avx2/Compiler/intel2016.4/r/3.5.0/bin:/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/java/1.8.0_121:/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/java/1.8.0_121/bin:/global/software/cvmfs/compat/bin:/cvmfs/soft.computecanada.ca/easybuild/software/2017/avx2/Compiler/intel2016.4/openmpi/2.1.1/bin:/cvmfs/restricted.computecanada.ca/easybuild/software/2017/Core/ifort/2016.4.258/compilers_and_libraries_2016.4.258/linux/bin/intel64:/cvmfs/restricted.computecanada.ca/easybuild/software/2017/Core/icc/2016.4.258/compilers_and_libraries_2016.4.258/linux/bin/intel64:/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/gcc-5.4.0/bin:/cvmfs/restricted.computecanada.ca/easybuild/software/2017/Core/imkl/11.3.4.258/mkl/bin:/cvmfs/restricted.computecanada.ca/easybuild/software/2017/Core/imkl/11.3.4.258/bin:/cvmfs/soft.computecanada.ca/easybuild/bin:/cvmfs/soft.computecanada.ca/custom/bin:/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/bin:/cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/sbin:/global/home/hasch/.local/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/global/software/stata15:/global/software/python/anaconda3/bin:/global/software/stata15:/global/software/python/anaconda3/bin
+~~~~
+
+You’ll notice a similarity to the output of the "which" command. In this
+case, there’s only one difference: the different directory at the
+beginning. When we ran the module load command, it added a directory
+to the beginning of our $PATH. Let’s examine what’s there:
+
+~~~~ {.python}
+$ ls /cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.8.0/bin
+~~~~
+~~~~ {.output}
+2to3              idle3    pip3.8    python3           virtualenv
+2to3-3.8          idle3.8  pydoc3    python3.8         wheel
+easy_install      pip      pydoc3.8  python3.8-config
+easy_install-3.8  pip3     python    python3-config
+~~~~
+
+Taking this to it’s conclusion, module load will add software to your
+$PATH. It “loads” software. A special note on this - depending on
+which version of the module program that is installed at your site,
+module load will also load required software dependencies.
+
+To demonstrate, let’s use module list. module list shows all loaded software modules.
+
+~~~~ {.python}
+$ module list
+~~~~
+~~~~ {.output}
+
+Currently Loaded Modules:
+  1) nixpkgs/16.09   (S)      5) ifort/.2016.4.258 (H)   9) java/1.8.0_121 (t)
+  2) imkl/11.3.4.258 (math)   6) intel/2016.4      (t)  10) r/3.5.0        (t)
+  3) gcccore/.5.4.0  (H)      7) openmpi/2.1.1     (m)  11) python/3.8.0   (t)
+  4) icc/.2016.4.258 (H)      8) StdEnv/2016.4     (S)
+
+  Where:
+   S:     Module is Sticky, requires --force to unload or purge
+   m:     MPI implementations / Implémentations MPI
+   math:  Mathematical libraries / Bibliothèques mathématiques
+   t:     Tools for development / Outils de développement
+   H:                Hidden Module
+
+~~~~
+
+~~~~
+$ module load beast
+$ module list
+
+Currently Loaded Modules:
+  1) nixpkgs/16.09     (S)      8) StdEnv/2016.4    (S)
+  2) imkl/11.3.4.258   (math)   9) java/1.8.0_121   (t)
+  3) gcccore/.5.4.0    (H)     10) r/3.5.0          (t)
+  4) icc/.2016.4.258   (H)     11) python/3.8.0     (t)
+  5) ifort/.2016.4.258 (H)     12) beagle-lib/3.1.1 (bio)
+  6) intel/2016.4      (t)     13) beast/2.5.2      (bio)
+  7) openmpi/2.1.1     (m)
+
+  Where:
+   S:     Module is Sticky, requires --force to unload or purge
+   bio:   Bioinformatic libraries/apps / Logiciels de bioinformatique
+   m:     MPI implementations / Implémentations MPI
+   math:  Mathematical libraries / Bibliothèques mathématiques
+   t:     Tools for development / Outils de développement
+   H:                Hidden Module
+
+
+   H:             Hidden Module
+
+~~~~
+
+So module added the "beast" software and other packages that are required to make "beast" work.
+To undo this, we can use the "unload" command:
+
+~~~~ {.python}
+$ module unload beast
+$ module list
+~~~~
+~~~~ {.output}
+
+Currently Loaded Modules:
+  1) nixpkgs/16.09   (S)      5) ifort/.2016.4.258 (H)   9) java/1.8.0_121 (t)
+  2) imkl/11.3.4.258 (math)   6) intel/2016.4      (t)  10) r/3.5.0        (t)
+  3) gcccore/.5.4.0  (H)      7) openmpi/2.1.1     (m)  11) python/3.8.0   (t)
+  4) icc/.2016.4.258 (H)      8) StdEnv/2016.4     (S)
+
+  Where:
+   S:     Module is Sticky, requires --force to unload or purge
+   m:     MPI implementations / Implémentations MPI
+   math:  Mathematical libraries / Bibliothèques mathématiques
+   t:     Tools for development / Outils de développement
+   H:                Hidden Module
+~~~~
+
+So using module unload “un-loads” a module together with its
+dependencies. If we wanted to unload everything at once, we could run
+module purge (without the --force option).
+
+~~~~ {.python}
+$ module purge
+~~~~
+~~~~ {.output}
+The following modules were not unloaded:
+  (Use "module --force purge" to unload all):
+
+  1) StdEnv/2016.4    3) icc/.2016.4.258   5) ifort/.2016.4.258   7) imkl/11.3.4.258
+  2) nixpkgs/.16.09   4) gcccore/.5.4.0    6) intel/2016.4        8) openmpi/2.1.1
+
+~~~~
+
+Note that module purge is informative. It lets us know that all but a
+default set of packages have been unloaded (and how to actually unload
+these if we truly so desired).
+
+Let’s take a closer look at the gcc module. GCC is an extremely widely
+used C/C++/Fortran compiler. Tons of software is dependent on the GCC
+version, and might not compile or run if the wrong version is
+loaded. In this case, there are two different versions: gcc/4.8.5 and
+gcc/5.4.0. How do we load each copy and which copy is the default?
+
+In this case, gcc/5.4.0 has a (D) next to it. This indicates that it
+is the default - if we type module load gcc, this is the copy that
+will be loaded.
+
+~~~~ {.python}
+$ module load gcc
+$ gcc --version
+~~~~
+~~~~ {.output}
+Lmod is automatically replacing "intel/2016.4" with "gcc/5.4.0".
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+gcc (GCC) 5.4.0
+~~~~
+
+Note that three things happened: the default copy of GCC was loaded
+(version 5.4.0), the Intel compilers (which conflict with GCC) were
+unloaded, and software that is dependent on compiler (OpenMPI) was
+reloaded. The module system turned what might be a super-complex
+operation into a single command.
+
+## Loading a module by default
+
+Adding a set of module load commands to all of your scripts and having
+to manually load modules every time you log on can be
+tiresome. Fortunately, there is a way of specifying a set of “default
+modules” that always get loaded, regardless of whether or not you’re
+logged on or running a job. Every user has two hidden files in their
+home directory: .bashrc and .bash_profile (you can see these files
+with ls -la ~). These scripts are run every time you log on or run a
+job. Adding a module load command to one of these shell scripts means
+that that module will always be loaded. Modify either your .bashrc or
+.bash_profile scripts to load a commonly used module like Python. Does
+your python3 --version job from before still need module load to run?
+
+## Editing, compiling, and running your own software
+
+If you want to install your own software you can usually do so in some
+sub-directory that is accessible only to you. Some software builds are
+very complex, so we can't go into too much details, byut a basic
+outline what is involved will be given here. Often, what you have is
+source code that requires compiling in order to yield an executable,
+i.e. runable program.
+
+As an example, we use a simple piece of Fortran code that computes the "sum of square-roots" using a parallel technique called "multithreading". Neither Fortran nor multi-threading is the subject in this course, but we can use this code later for comparison with our MPI-based Python efforts. So here's the code:
+
+~~~~ {.python}
+$ more OMProotsum.f90
+program rootsum
+  integer :: i,m
+  real*8 :: sum=0.d0
+  read(*,*)m
+!$omp parallel do reduction(+:sum)
+  do i=0,m
+     sum=sum+sqrt(dfloat(i))
+  end do
+!$omp end parallel do
+  write(*,*)' Result =',sum
+  stop
+end program rootsum
+~~~~
+
+Even if you have never seen Fortran code this should be mostly
+self-explanatory. There is a loop in the middle of the program that
+computes the sum of square-roots of all integers between 0 and a
+maximum number m.
+
+To get this compiled, first choose a compiler. We are going to change
+the default compiler for this, just to demonstrate how. Let's go for
+the "gnu" compiler that is part of a package called "gcc" (Gnu C
+Compiler, but it's got a Fortran one included). So let's see what we have:
+
+~~~~ {.python}
+$ module avail gcc
+~~~~
+~~~~ {.output}
+--------------------------------- Core Modules ---------------------------------
+   gcc/4.8.5 (t)    gcc/5.4.0 (t,D)    gcc/7.3.0 (t)    gcc/9.1.0 (t)
+   gcc/4.9.4 (t)    gcc/6.4.0 (t)      gcc/8.3.0 (t)
+
+  Where:
+   t:  Tools for development / Outils de développement
+   D:  Default Module
+
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching
+any of the "keys".
+~~~~
+
+Let's pick the absolute newest, which is not the default:
+
+~~~~ {.python}
+$ module load gcc/9.1.0
+~~~~
+
+We can compile this program using the "gfortran" compiler that is part of the gcc package.
+
+~~~~ {.python}
+$ gfortran -fopenmp -O3 -o OMProotsum OMProotsum.f90
+~~~~
+
+The -fopenmp option is necessary because of the parallel OpenMP
+constructs we are using to make the code using multithreading. Never
+mind the details. To us it's just a further optimization option for
+now. The -O3 option ttells the compiler to do some further
+optimization which will make the code run faster. The -o option is
+followed by "OMProotsum" to tell the compiler what the resulting
+executable is going to be called. The default is "a.out" which is not
+very decriptive. Then at the end of the line you specify what we are
+going to compile.
+
+Once this is executed, a file OMProotsum appears in the directory. As you can see from the code, the program will read the maximum number m from the "standard input". We can "redirect" this from a file which we create.
+
+~~~~ {.python}
+$ echo 1234567890 > rootsum.in
+$ time -p ./OMProotsum < rootsum.in
+  Result =   28918862541603.602
+real 0.42
+user 7.06
+sys 0.00
+~~~~
+
+The first line is just writing the number "1234567890" into a file
+"rootsum.in". The next line executes the program we just made by
+running the compiler. It also uses an external timing function called
+"time" to give us information about how long the program ran. And it's
+using the rootsum.in file as input for the program. One of the issues we have here is that this parallel program grabs as many cores as it can get and produces the corresponding numbers of threads dynamically. Let's take control of that by setting an environment variable called "OMP_NUM_THREADS":
+
+~~~~ {.python}
+$ OMP_NUM_THREADS=1 time -p ./OMProotsum < rootsum.in
+  Result =   28918862541603.520
+real 3.91
+user 3.90
+sys 0.00
+~~~~
+
+So with only one thread it runs for slightly less than 4 seconds.
+With two it should take half that:
+
+~~~~ {.python}
+$ OMP_NUM_THREADS=2 time -p ./OMProotsum < rootsum.in
+  Result =   28918862541604.125
+real 1.96
+user 3.90
+sys 0.00
+~~~~
+
+Looks like that is the case. So that's it for now about compiling and
+running programs. In practise compilation can be a tedious and
+complicated task. Some program packages have hundreds or thousands of
+components that need to be built in. We will see a bit later how to
+automate some of that.
+
+## Python package installation
+
+
+
