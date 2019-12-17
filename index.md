@@ -1,6 +1,5 @@
 ﻿---
-layout: page
-title: High-Performance Computational Physics Part 1 : Intro to HPC & MPI
+High-Performance Computational Physics Part 1 : Intro to HPC & MPI
 ---
 
 Modern Computers systems are often "parallel", i.e. they have multiple processing units that can be taught to work together on a single application. Parallel computers range from multicore cell phones to huge clusters with hundreds of thousands of processors. Programming for such machines can be a daunting task. But a few basic principles can get you surprisingly far.
@@ -20,14 +19,14 @@ The approach we are taking here is to "parallelize" simple sample code, and then
 
 On the way, we will earn a few techniques that are common when programming for clusters and other parallel systems, and test them out with sample programs.
 
-> ## Note {.prereq}
+> ## Note
 >
 > Unfortunately, this can not all be done "hands-on". It is unavoidable to introduce 
 > new concepts before we are ready to apply them, there's going to be quite a bit of talking and slides. We will put exercises in there whenever possible, and at the end of the 2nd, 4th, and 5th session, there will be assignments.
 >
 > Some programming background in Python is a prerequisit for this, but since this is not the "native" programming language of the lecturer, you're likely to teach him more Python than he teaches you. Occasionally, we will use use pre-made programs to demonstrate things.
 
-> ## Getting ready {.getready}
+> ## Getting ready
 >
 > All the required data and and code segements will made available as the course progresses. You will also be issued an account on the CAC "Frontenac" compute cluster for the duration of the course.
 
