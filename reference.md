@@ -58,7 +58,7 @@ subtitle: Reference
 * Simple approach : Broadcast/reduce
 * Implementation of simple matmul
 * Memory distribution
-* The hard way: point-2-point (Fortran, if time allows)
+* The hard way: point-2-point (C, if time allows)
 * Collective memory distribution : Scatter/Gather
 
 ##  [Week 3, Session 1, Hour 1 : Domain Decomposition and Heat Equation](311.md)
